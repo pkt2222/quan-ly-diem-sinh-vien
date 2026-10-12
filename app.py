@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -53,7 +52,7 @@ st.markdown(
 with st.sidebar:
   st.markdown("### 🏢 **EXECUTIVE PORTAL**")
   st.markdown(
-      f"**Học viên:** {DEVELOPER_NAME}<br>**MSSV:** `{STUDENT_ID}`",
+      f"**Sinh viên:** {DEVELOPER_NAME}<br>**MSSV:** `{STUDENT_ID}`",
       unsafe_allow_html=True,
   )
   st.markdown("---")
@@ -71,7 +70,7 @@ with st.sidebar:
   st.success("🟢 Trạng thái hệ thống: Hoạt động ổn định")
 
 # ==========================================
-# TẠO DỮ LIỆU ĐỘC QUYỀN CHO ĐÚNG 10 HỌC SINH (ĐÃ BỎ TÊN BẠN VÀ 1 NGƯỜI KHÁC)
+# TẠO DỮ LIỆU ĐỘC QUYỀN CHO ĐÚNG 10 HỌC SINH
 # ==========================================
 np.random.seed(999)
 data = {
@@ -128,7 +127,7 @@ if menu == "⚡ Tổng Quan Điều Hành (Executive Overview)":
       f"""
         <div class="executive-header">
             <h2>🛡️ HỆ THỐNG QUẢN LÝ VÀ PHÂN TÍCH ĐIỂM SỐ EXECUTIVE</h2>
-            <p>Phát triển và vận hành bởi kỹ sư: <b>{DEVELOPER_NAME}</b> | Mã số sinh viên: <b>{STUDENT_ID}</b></p>
+            <p>Phát triển và vận hành bởi sinh viên: <b>{DEVELOPER_NAME}</b> | Mã số sinh viên: <b>{STUDENT_ID}</b></p>
         </div>
     """,
       unsafe_allow_html=True,
@@ -180,7 +179,7 @@ if menu == "⚡ Tổng Quan Điều Hành (Executive Overview)":
         linewidth=2.5,
         markersize=7,
     )
-    ax.fill_between(df["Họ and Tên"] if "Họ and Tên" in df.columns else df["Họ và Tên"], df["Điểm Tổng Kết"], color="#3b82f6", alpha=0.1)
+    ax.fill_between(df["Họ và Tên"], df["Điểm Tổng Kết"], color="#3b82f6", alpha=0.1)
     ax.set_ylabel("Điểm Tổng Kết")
     plt.xticks(rotation=35, ha="right")
     ax.grid(True, linestyle="--", alpha=0.3)
@@ -189,7 +188,7 @@ if menu == "⚡ Tổng Quan Điều Hành (Executive Overview)":
   with c_right:
     st.subheader("📌 Báo Cáo Nhận Định Hệ Thống")
     st.info(
-        f"🥇 **Học viên xuất sắc nhất:** `{top_student['Họ and Tên'] if 'Họ and Tên' in top_student else top_student['Họ và Tên']}` ("
+        f"🥇 **Học viên xuất sắc nhất:** `{top_student['Họ và Tên']}` ("
         f"{top_student['Mã Định Danh']}) đạt thành tích cao nhất với"
         f" **{top_student['Điểm Tổng Kết']}** điểm."
     )
@@ -237,7 +236,7 @@ elif menu == "🔍 Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân":
   st.markdown("Tra cứu chuyên sâu bảng điểm từng học viên trong hệ thống.")
 
   selected_name = st.selectbox("👉 Lựa chọn học viên cần đánh giá:", df["Họ và Tên"])
-  student_rec = df[df["Họ và Tên"] == selected_name].iloc[0]
+  student_rec = df[df["Họ and Tên"] if "Họ and Tên" in df.columns else df["Họ và Tên"] == selected_name].iloc[0] if "Họ and Tên" in df.columns else df[df["Họ và Tên"] == selected_name].iloc[0]
 
   st.markdown(f"### 📋 Thông tin chi tiết: `{selected_name}`")
   m1, m2, m3, m4 = st.columns(4)
@@ -274,33 +273,4 @@ elif menu == "📈 Biểu Đồ Phân Phối Đa Chiều":
   ax.set_ylabel("Điểm Tổng Kết", fontweight="bold")
   ax.set_title("Biểu đồ phân phối điểm tổng kết học viên", fontsize=14, fontweight="bold")
   plt.xticks(rotation=35, ha="right")
-  ax.grid(axis="y", linestyle="--", alpha=0.5)
-
-  for bar in bars:
-    height = bar.get_height()
-    ax.annotate(
-        f"{height}",
-        xy=(bar.get_x() + bar.get_width() / 2, height),
-        xytext=(0, 4),
-        textcoords="offset points",
-        ha="center",
-        va="bottom",
-        fontweight="bold",
-    )
-
-  st.pyplot(fig)
-
-# ==========================================
-# CHÂN TRANG (FOOTER) - KHẲNG ĐỊNH BẢN QUYỀN
-# ==========================================
-st.markdown("---")
-st.markdown(
-    f"""
-    <p style='text-align: center; color: #64748b; font-size: 14px;'>
-        <b>Họ và tên tác giả:</b> {DEVELOPER_NAME} &nbsp;|&nbsp; 
-        <b>Mã số sinh viên (MSSV):</b> {STUDENT_ID}<br>
-        🛡️ <i>Executive Student Management System | Academic Enterprise Edition</i> 🛡️
-    </p>
-""",
-    unsafe_allow_html=True,
-)
+  ax.grid(axis="y", linestyle="--",
