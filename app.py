@@ -1,3 +1,4 @@
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -70,13 +71,12 @@ with st.sidebar:
   st.success("🟢 Trạng thái hệ thống: Hoạt động ổn định")
 
 # ==========================================
-# TẠO DỮ LIỆU ĐỘC QUYỀN CHO 12 SINH VIÊN
+# TẠO DỮ LIỆU ĐỘC QUYỀN CHO ĐÚNG 10 HỌC SINH (ĐÃ BỎ TÊN BẠN VÀ 1 NGƯỜI KHÁC)
 # ==========================================
-np.random.seed(888)
+np.random.seed(999)
 data = {
-    "Mã Định Danh": [f"STV-2026-{101+i}" for i in range(12)],
+    "Mã Định Danh": [f"STV-2026-{201+i}" for i in range(10)],
     "Họ và Tên": [
-        "Phan Khải Trí",
         "Nguyễn Hoàng Long",
         "Trần Minh Thư",
         "Lê Gia Hân",
@@ -87,11 +87,10 @@ data = {
         "Ngô Thanh Trúc",
         "Dương Gia Huy",
         "Hồ Hải Nam",
-        "Lương Thảo Vy",
     ],
-    "Chuyên Cần": np.random.randint(8, 10, 12).astype(float),
-    "Kiểm Tra Giữa Kỳ": np.round(np.random.uniform(6.5, 9.8, 12), 1),
-    "Thi Cuối Kỳ": np.round(np.random.uniform(5.5, 10.0, 12), 1),
+    "Chuyên Cần": np.random.randint(8, 10, 10).astype(float),
+    "Kiểm Tra Giữa Kỳ": np.round(np.random.uniform(6.5, 9.8, 10), 1),
+    "Thi Cuối Kỳ": np.round(np.random.uniform(5.5, 10.0, 10), 1),
 }
 
 df = pd.DataFrame(data)
@@ -181,7 +180,7 @@ if menu == "⚡ Tổng Quan Điều Hành (Executive Overview)":
         linewidth=2.5,
         markersize=7,
     )
-    ax.fill_between(df["Họ và Tên"], df["Điểm Tổng Kết"], color="#3b82f6", alpha=0.1)
+    ax.fill_between(df["Họ and Tên"] if "Họ and Tên" in df.columns else df["Họ và Tên"], df["Điểm Tổng Kết"], color="#3b82f6", alpha=0.1)
     ax.set_ylabel("Điểm Tổng Kết")
     plt.xticks(rotation=35, ha="right")
     ax.grid(True, linestyle="--", alpha=0.3)
@@ -190,7 +189,7 @@ if menu == "⚡ Tổng Quan Điều Hành (Executive Overview)":
   with c_right:
     st.subheader("📌 Báo Cáo Nhận Định Hệ Thống")
     st.info(
-        f"🥇 **Học viên xuất sắc nhất:** `{top_student['Họ và Tên']}` ("
+        f"🥇 **Học viên xuất sắc nhất:** `{top_student['Họ and Tên'] if 'Họ and Tên' in top_student else top_student['Họ và Tên']}` ("
         f"{top_student['Mã Định Danh']}) đạt thành tích cao nhất với"
         f" **{top_student['Điểm Tổng Kết']}** điểm."
     )
