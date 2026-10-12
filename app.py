@@ -3,67 +3,48 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-# 1. Cấu hình giao diện tổng thể (Wide layout)
+# 1. Cấu hình giao diện tổng thể
 st.set_page_config(
     page_title="Enterprise Student Management Hub",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="expanded",
 )
 
-# Custom CSS tinh chỉnh giao diện hiện đại, chuyên nghiệp
+# Custom CSS giao diện
 st.markdown(
     """
     <style>
-    .main {
-        background-color: #f8fafc;
-    }
-    .metric-card {
-        background: #ffffff;
-        padding: 20px;
-        border-radius: 16px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-        border: 1px solid #e2e8f0;
-        text-align: center;
-    }
+    .main { background-color: #f8fafc; }
     .hero-box {
         background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
         padding: 30px;
         border-radius: 20px;
         color: white;
         margin-bottom: 25px;
-        box-shadow: 0 20px 25px -5px rgba(79, 70, 229, 0.2);
     }
     </style>
 """,
     unsafe_allow_html=True,
 )
 
-# 2. Sidebar điều hướng chuyên nghiệp
+# 2. Sidebar điều hướng
 with st.sidebar:
-  st.image(
-      "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&auto=format&fit=crop&q=80",
-      use_container_width=True,
-  )
   st.markdown("### 🎓 **STUDENT HUB PRO**")
-  st.markdown("Hệ thống kiểm định & phân tích học lực chuẩn quốc tế.")
+  st.markdown("Hệ thống quản lý học lực chuyên nghiệp.")
   st.markdown("---")
-
   menu = st.selectbox(
       "📌 CHỌN MODULE QUẢN LÝ",
       [
-          "📊 Tổng Quan Hệ Thống (Dashboard)",
+          "📊 Tổng Quan Dashboard",
           "📋 Quản Trị Cơ Sở Dữ Liệu",
           "🔍 Tra Cứu & Hồ Sơ Cá Nhân",
-          "📈 Biểu Đồ Phân Tích Chuyên Sâu",
+          "📈 Biểu Đồ Phân Tích",
       ],
   )
-
   st.markdown("---")
-  st.success("🟢 **Trạng thái hệ thống:** Hoạt động ổn định")
-  st.markdown("🔒 **Phiên bản:** v3.2 Enterprise")
+  st.success("🟢 Trạng thái: Hoạt động ổn định")
 
-# 3. Dữ liệu mẫu nâng cao cho 10 sinh viên
+# 3. Dữ liệu mẫu 10 sinh viên
 np.random.seed(42)
 data = {
     "Mã SV": [f"SV{101+i}" for i in range(10)],
@@ -85,14 +66,11 @@ data = {
 }
 
 df = pd.DataFrame(data)
-
-# Tính điểm Tổng kết hệ 10
 df["Tổng kết"] = np.round(
     df["Chuyên cần"] * 0.1 + df["Giữa kỳ"] * 0.3 + df["Cuối kỳ"] * 0.6, 1
 )
 
 
-# Hàm xếp loại chuẩn học thuật chuyên nghiệp
 def xep_loai(diem):
   if diem >= 8.5:
     return "🌟 Xuất Sắc"
@@ -106,8 +84,93 @@ def xep_loai(diem):
 
 df["Xếp loại"] = df["Tổng kết"].apply(xep_loai)
 
-# 4. Xây dựng các Module chức năng
-if menu == "📊 Tổng Quan Hệ Thống (Dashboard)":
-  # Banner chào mừng hiện đại
+# 4. Các Module hiển thị
+if menu == "📊 Tổng Quan Dashboard":
   st.markdown(
       """
+        <div class="hero-box">
+            <h2>🚀 Cổng Quản Trị Học Tập Tổng Quan</h2>
+            <p>Hệ thống tự động tổng hợp và phân tích trực quan kết quả học tập của sinh viên.</p>
+        </div>
+    """,
+      unsafe_allow_html=True,
+  )
+
+  dtb_lop = np.round(df["Tổng kết"].mean(), 2)
+  so_sv_dat = len(df[df["Tổng kết"] >= 5.0])
+  max_sv = df.loc[df["Tổng kết"].idxmax()]
+  min_sv = df.loc[df["Tổng kết"].idxmin()]
+
+  col1, col2, col3, col4 = st.columns(4)
+  col1.metric("👥 Tổng Sĩ Số", f"{len(df)} SV")
+  col2.metric("⭐ Điểm Trung Bình", f"{dtb_lop} / 10")
+  col3.metric("✅ Tỷ Lệ Đạt", f"{(so_sv_dat/len(df))*100}%")
+  col4.metric("🏆 Điểm Cao Nhất", f"{max_sv['Tổng kết']}")
+
+  st.markdown("---")
+  c1, c2 = st.columns(2)
+  c1.success(
+      f"🥇 **Thủ khoa:** {max_sv['Họ tên']} với điểm tổng kết"
+      f" **{max_sv['Tổng kết']}**."
+  )
+  c2.warning(
+      f"⚠️ **Cần hỗ trợ:** {min_sv['Họ tên']} với điểm tổng kết"
+      f" **{min_sv['Tổng kết']}**."
+  )
+
+elif menu == "📋 Quản Trị Cơ Sở Dữ Liệu":
+  st.title("📋 BẢNG ĐIỂM CHI TIẾT TOÀN KHÓA")
+  keyword = st.text_input("🔍 Tìm kiếm sinh viên theo tên hoặc Mã SV:", "")
+  if keyword:
+    filtered = df[
+        df["Họ tên"].str.contains(keyword, case=False, na=False)
+        | df["Mã SV"].str.contains(keyword, case=False, na=False)
+    ]
+    st.dataframe(filtered, use_container_width=True)
+  else:
+    st.dataframe(df, use_container_width=True)
+
+elif menu == "🔍 Tra Cứu & Hồ Sơ Cá Nhân":
+  st.title("🔍 HỒ SƠ ĐÁNH GIÁ NĂNG LỰC CÁ NHÂN")
+  selected_student = st.selectbox("👉 Chọn sinh viên:", df["Họ tên"])
+  s_info = df[df["Họ tên"] == selected_student].iloc[0]
+
+  m1, m2, m3, m4 = st.columns(4)
+  m1.metric("📘 Chuyên cần", s_info["Chuyên cần"])
+  m2.metric("✍️ Giữa kỳ", s_info["Giữa kỳ"])
+  m3.metric("📝 Cuối kỳ", s_info["Cuối kỳ"])
+  m4.metric("📊 Tổng kết", s_info["Tổng kết"])
+  st.markdown(f"### 🏅 Xếp loại học lực: **{s_info['Xếp loại']}**")
+
+elif menu == "📈 Biểu Đồ Phân Tích":
+  st.title("📈 BIỂU ĐỒ PHÂN TÍCH ĐIỂM SỐ")
+  fig, ax = plt.subplots(figsize=(10, 4.5))
+  bars = ax.bar(
+      df["Họ tên"],
+      df["Tổng kết"],
+      color="#3b82f6",
+      edgecolor="#1d4ed8",
+      linewidth=1.2,
+  )
+  ax.set_ylabel("Điểm Tổng Kết")
+  plt.xticks(rotation=30, ha="right")
+  ax.grid(axis="y", linestyle="--", alpha=0.5)
+
+  for bar in bars:
+    height = bar.get_height()
+    ax.annotate(
+        f"{height}",
+        xy=(bar.get_x() + bar.get_width() / 2, height),
+        xytext=(0, 3),
+        textcoords="offset points",
+        ha="center",
+        va="bottom",
+    )
+  st.pyplot(fig)
+
+st.markdown("---")
+st.markdown(
+    "<p style='text-align: center; color: gray;'>Enterprise Student Hub"
+    " Management System</p>",
+    unsafe_allow_html=True,
+)
