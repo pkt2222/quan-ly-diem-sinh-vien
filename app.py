@@ -235,8 +235,8 @@ elif menu == "🔍 Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân":
   st.title("🔍 HỒ SƠ ĐÁNH GIÁ NĂNG LỰC CHI TIẾT")
   st.markdown("Tra cứu chuyên sâu bảng điểm từng học viên trong hệ thống.")
 
-  selected_name = st.selectbox("👉 Lựa chọn học viên cần đánh giá:", df["Họ và Tên"])
-  student_rec = df[df["Họ and Tên"] if "Họ and Tên" in df.columns else df["Họ và Tên"] == selected_name].iloc[0] if "Họ and Tên" in df.columns else df[df["Họ và Tên"] == selected_name].iloc[0]
+  selected_name = st.selectbox("👉 Lựa chọn học viên cần đánh giá:", df["Họ and Tên"] if "Họ and Tên" in df.columns else df["Họ và Tên"])
+  student_rec = df[df["Họ và Tên"] == selected_name].iloc[0]
 
   st.markdown(f"### 📋 Thông tin chi tiết: `{selected_name}`")
   m1, m2, m3, m4 = st.columns(4)
@@ -273,4 +273,33 @@ elif menu == "📈 Biểu Đồ Phân Phối Đa Chiều":
   ax.set_ylabel("Điểm Tổng Kết", fontweight="bold")
   ax.set_title("Biểu đồ phân phối điểm tổng kết học viên", fontsize=14, fontweight="bold")
   plt.xticks(rotation=35, ha="right")
-  ax.grid(axis="y", linestyle="--",
+  ax.grid(axis="y", linestyle="--", alpha=0.5)
+
+  for bar in bars:
+    height = bar.get_height()
+    ax.annotate(
+        f"{height}",
+        xy=(bar.get_x() + bar.get_width() / 2, height),
+        xytext=(0, 4),
+        textcoords="offset points",
+        ha="center",
+        va="bottom",
+        fontweight="bold",
+    )
+
+  st.pyplot(fig)
+
+# ==========================================
+# CHÂN TRANG (FOOTER) - KHẲNG ĐỊNH BẢN QUYỀN
+# ==========================================
+st.markdown("---")
+st.markdown(
+    f"""
+    <p style='text-align: center; color: #64748b; font-size: 14px;'>
+        <b>Họ và tên tác giả:</b> {DEVELOPER_NAME} &nbsp;|&nbsp; 
+        <b>Mã số sinh viên (MSSV):</b> {STUDENT_ID}<br>
+        🛡️ <i>Executive Student Management System | Academic Enterprise Edition</i> 🛡️
+    </p>
+""",
+    unsafe_allow_html=True,
+)
