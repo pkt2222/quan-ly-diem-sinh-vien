@@ -52,7 +52,7 @@ st.markdown(
 with st.sidebar:
   st.markdown("### 🏢 **EXECUTIVE PORTAL**")
   st.markdown(
-      f"**Sinh viên:** {DEVELOPER_NAME}<br>**MSSV:** `{STUDENT_ID}`",
+      f"**Sinh viên:** {DEVELOPER_NAME}<br><b>MSSV:</b> {STUDENT_ID}",
       unsafe_allow_html=True,
   )
   st.markdown("---")
@@ -228,78 +228,3 @@ elif menu == "📊 Cơ Sở Dữ Liệu & Bộ Lọc Nâng Cao":
         | df["Mã Định Danh"].str.contains(search_key, case=False, na=False)
     ]
     st.dataframe(filtered_df, use_container_width=True)
-  else:
-    st.dataframe(df, use_container_width=True)
-
-elif menu == "🔍 Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân":
-  st.title("🔍 HỒ SƠ ĐÁNH GIÁ NĂNG LỰC CHI TIẾT")
-  st.markdown("Tra cứu chuyên sâu bảng điểm từng học viên trong hệ thống.")
-
-  selected_name = st.selectbox("👉 Lựa chọn học viên cần đánh giá:", df["Họ and Tên"] if "Họ and Tên" in df.columns else df["Họ và Tên"])
-  student_rec = df[df["Họ và Tên"] == selected_name].iloc[0]
-
-  st.markdown(f"### 📋 Thông tin chi tiết: `{selected_name}`")
-  m1, m2, m3, m4 = st.columns(4)
-  m1.metric("📘 Chuyên Cần", student_rec["Chuyên Cần"])
-  m2.metric("✍️ Giữa Kỳ", student_rec["Kiểm Tra Giữa Kỳ"])
-  m3.metric("📝 Cuối Kỳ", student_rec["Thi Cuối Kỳ"])
-  m4.metric("📊 Tổng Kết", student_rec["Điểm Tổng Kết"])
-
-  st.markdown("---")
-  st.markdown(
-      f"### 🏅 Đánh giá xếp loại chuẩn: **{student_rec['Xếp Loại']}**"
-  )
-
-  if student_rec["Điểm Tổng Kết"] >= 8.5:
-    st.balloons()
-    st.success("🌟 Đạt danh hiệu học lực xuất sắc tiêu biểu trong khóa học!")
-  elif student_rec["Điểm Tổng Kết"] >= 5.0:
-    st.info("✅ Hoàn thành tốt yêu cầu chuẩn đầu ra học phần.")
-  else:
-    st.error("⚠️ Cần kế hoạch cải thiện và bổ sung kiến thức chuyên môn.")
-
-elif menu == "📈 Biểu Đồ Phân Phối Đa Chiều":
-  st.title("📈 PHÂN TÍCH TRỰC QUAN ĐA CHIỀU")
-  st.markdown("Biểu đồ so sánh chi tiết mức điểm tổng kết toàn bộ thành viên.")
-
-  fig, ax = plt.subplots(figsize=(10, 5))
-  bars = ax.bar(
-      df["Họ và Tên"],
-      df["Điểm Tổng Kết"],
-      color="#4f46e5",
-      edgecolor="#3b82f6",
-      linewidth=1.5,
-  )
-  ax.set_ylabel("Điểm Tổng Kết", fontweight="bold")
-  ax.set_title("Biểu đồ phân phối điểm tổng kết học viên", fontsize=14, fontweight="bold")
-  plt.xticks(rotation=35, ha="right")
-  ax.grid(axis="y", linestyle="--", alpha=0.5)
-
-  for bar in bars:
-    height = bar.get_height()
-    ax.annotate(
-        f"{height}",
-        xy=(bar.get_x() + bar.get_width() / 2, height),
-        xytext=(0, 4),
-        textcoords="offset points",
-        ha="center",
-        va="bottom",
-        fontweight="bold",
-    )
-
-  st.pyplot(fig)
-
-# ==========================================
-# CHÂN TRANG (FOOTER) - KHẲNG ĐỊNH BẢN QUYỀN
-# ==========================================
-st.markdown("---")
-st.markdown(
-    f"""
-    <p style='text-align: center; color: #64748b; font-size: 14px;'>
-        <b>Họ và tên tác giả:</b> {DEVELOPER_NAME} &nbsp;|&nbsp; 
-        <b>Mã số sinh viên (MSSV):</b> {STUDENT_ID}<br>
-        🛡️ <i>Executive Student Management System | Academic Enterprise Edition</i> 🛡️
-    </p>
-""",
-    unsafe_allow_html=True,
-)
