@@ -17,26 +17,29 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS phong cách Enterprise Executive Dashboard
+# Custom CSS tinh chỉnh giao diện sáng sủa, cực kỳ dễ nhìn
 st.markdown(
     """
     <style>
-    .main { background-color: #0b0f19; color: #f8fafc; }
-    .stSidebar { background-color: #111827 !important; }
+    .main { background-color: #f8fafc; color: #1e293b; }
+    /* Tùy chỉnh sidebar sáng sủa, chữ rõ nét */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff !important;
+        border-right: 1px solid #e2e8f0;
+    }
+    [data-testid="stSidebar"] * {
+        color: #1e293b !important;
+    }
     .executive-header {
-        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
         padding: 25px 30px;
         border-radius: 16px;
-        border: 1px solid rgba(99, 102, 241, 0.3);
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        color: white;
+        box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.2);
         margin-bottom: 25px;
     }
-    .metric-container {
-        background: #1f2937;
-        padding: 20px;
-        border-radius: 12px;
-        border-left: 5px solid #6366f1;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    .executive-header h2, .executive-header p {
+        color: white !important;
     }
     </style>
 """,
@@ -64,7 +67,7 @@ with st.sidebar:
       ],
   )
   st.markdown("---")
-  st.success("🟢 Trạng thái hệ thống: Bảo mật & Ổn định")
+  st.success("🟢 Trạng thái hệ thống: Hoạt động ổn định")
 
 # ==========================================
 # TẠO DỮ LIỆU ĐỘC QUYỀN CHO 12 SINH VIÊN
@@ -102,7 +105,6 @@ df["Điểm Tổng Kết"] = np.round(
 )
 
 
-# Xếp loại học thuật khắt khe tiêu chuẩn cao cấp
 def xep_loai_chuyen_gia(diem):
   if diem >= 8.5:
     return "🌟 Xuất Sắc (Honor)"
@@ -175,24 +177,14 @@ if menu == "⚡ Tổng Quan Điều Hành (Executive Overview)":
         df["Họ và Tên"],
         df["Điểm Tổng Kết"],
         marker="s",
-        color="#818cf8",
+        color="#4f46e5",
         linewidth=2.5,
         markersize=7,
     )
-    ax.fill_between(
-        df["Họ and Tên"]
-        if "Họ and Tên" in df.columns
-        else df["Họ và Tên"],
-        df["Điểm Tổng Kết"],
-        color="#6366f1",
-        alpha=0.15,
-    )
-    ax.set_ylabel("Điểm Tổng Kết", color="white")
-    ax.tick_params(colors="white")
-    plt.xticks(rotation=35, ha="right", color="white")
-    ax.grid(True, linestyle="--", alpha=0.2)
-    fig.patch.set_facecolor("#111827")
-    ax.set_facecolor("#1f2937")
+    ax.fill_between(df["Họ và Tên"], df["Điểm Tổng Kết"], color="#3b82f6", alpha=0.1)
+    ax.set_ylabel("Điểm Tổng Kết")
+    plt.xticks(rotation=35, ha="right")
+    ax.grid(True, linestyle="--", alpha=0.3)
     st.pyplot(fig)
 
   with c_right:
@@ -277,21 +269,13 @@ elif menu == "📈 Biểu Đồ Phân Phối Đa Chiều":
       df["Họ và Tên"],
       df["Điểm Tổng Kết"],
       color="#4f46e5",
-      edgecolor="#818cf8",
+      edgecolor="#3b82f6",
       linewidth=1.5,
   )
-  ax.set_ylabel("Điểm Tổng Kết", fontweight="bold", color="white")
-  ax.tick_params(colors="white")
-  ax.set_title(
-      "Biểu đồ phân phối điểm tổng kết học viên",
-      fontsize=14,
-      fontweight="bold",
-      color="white",
-  )
-  plt.xticks(rotation=35, ha="right", color="white")
-  ax.grid(axis="y", linestyle=":", alpha=0.3)
-  fig.patch.set_facecolor("#111827")
-  ax.set_facecolor("#1f2937")
+  ax.set_ylabel("Điểm Tổng Kết", fontweight="bold")
+  ax.set_title("Biểu đồ phân phối điểm tổng kết học viên", fontsize=14, fontweight="bold")
+  plt.xticks(rotation=35, ha="right")
+  ax.grid(axis="y", linestyle="--", alpha=0.5)
 
   for bar in bars:
     height = bar.get_height()
@@ -303,7 +287,6 @@ elif menu == "📈 Biểu Đồ Phân Phối Đa Chiều":
         ha="center",
         va="bottom",
         fontweight="bold",
-        color="#38bdf8",
     )
 
   st.pyplot(fig)
@@ -314,7 +297,7 @@ elif menu == "📈 Biểu Đồ Phân Phối Đa Chiều":
 st.markdown("---")
 st.markdown(
     f"""
-    <p style='text-align: center; color: #9ca3af; font-size: 14px;'>
+    <p style='text-align: center; color: #64748b; font-size: 14px;'>
         <b>Họ và tên tác giả:</b> {DEVELOPER_NAME} &nbsp;|&nbsp; 
         <b>Mã số sinh viên (MSSV):</b> {STUDENT_ID}<br>
         🛡️ <i>Executive Student Management System | Academic Enterprise Edition</i> 🛡️
