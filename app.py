@@ -2,8 +2,23 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Cấu hình tiêu đề trang
-st.set_page_config(page_title="Quản Lý Điểm Sinh Viên", layout="wide")
+# Cấu hình giao diện hiện đại
+st.set_page_config(
+    page_title="Executive Portal - Quản Lý Điểm Sinh Viên",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# CSS tùy chỉnh để giao diện sắc nét và ấn tượng hơn
+st.markdown("""
+    <style>
+        .main { background-color: #f8f9fa; }
+        .sidebar .sidebar-content { background-color: #1e1e2f; color: white; }
+        h1, h2, h3 { color: #1f2937; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .stMetric { background-color: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    </style>
+""", unsafe_allow_html=True)
 
 # Tạo dữ liệu 10 sinh viên đồng bộ
 data = {
@@ -31,17 +46,14 @@ def xep_loai(diem):
 
 df['Xep_loai'] = df['Tong_ket'].apply(xep_loai)
 
-# --- THANH MENU BÊN TRÁI (SIDEBAR) ---
-st.sidebar.title("EXECUTIVE PORTAL")
+# --- THANH MENU BÊN TRÁI (SIDEBAR PHONG CÁCH EXECUTIVE) ---
+st.sidebar.title("🏢 EXECUTIVE PORTAL")
 st.sidebar.markdown("---")
-# Bổ sung hiển thị thông tin sinh viên rõ ràng tại sidebar
-st.sidebar.markdown("### 👤 Thông tin sinh viên")
-st.sidebar.write("**Họ và tên:** Phan Khải Trí")
-st.sidebar.write("**MSSV:** 066208002686")
-st.sidebar.write("**Lớp:** 12B6")
+st.sidebar.markdown("**Sinh viên:** Phan Khải Trí")
+st.sidebar.markdown("**MSSV:** 066208002686")
 st.sidebar.markdown("---")
 
-st.sidebar.subheader("HỆ THỐNG MODULE")
+st.sidebar.subheader("📌 HỆ THỐNG MODULE")
 menu = st.sidebar.radio(
     "Chọn module:",
     [
@@ -53,59 +65,76 @@ menu = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.success("Trạng thái hệ thống: Hoạt động ổn định")
+st.sidebar.success("🟢 Trạng thái hệ thống: Hoạt động ổn định")
 
-# --- NỘI DUNG HIỂN THỊ THEO MENU ĐƯỢC CHỌN ---
+# --- NỘI DUNG HIỂN THỊ THEO MODULE ---
 
 if menu == "1. Tổng Quan Điều Hành (Executive Overview)":
-    st.title("QUẢN LÝ ĐIỂM SINH VIÊN - TỔNG QUAN")
-    st.subheader("📊 Thống kê chung của lớp")
+    st.title("⚡ Tổng Quan Điều Hành (Executive Overview)")
+    st.markdown("Hệ thống quản lý và thống kê dữ liệu học tập thông minh.")
+    st.markdown("---")
     
     dtb_lop = df['Tong_ket'].mean()
     sv_max = df.loc[df['Tong_ket'].idxmax()]
     sv_min = df.loc[df['Tong_ket'].idxmin()]
     so_luong_dat = (df['Tong_ket'] >= 5.0).sum()
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric(label="Điểm trung bình lớp", value=f"{dtb_lop:.2f}")
-        st.metric(label="Số sinh viên đạt (>= 5.0)", value=so_luong_dat)
+        st.metric(label="📈 Điểm trung bình lớp", value=f"{dtb_lop:.2f}")
     with col2:
-        st.metric(label="SV điểm cao nhất", value=f"{sv_max['Họ và tên']} ({sv_max['Tong_ket']})")
-        st.metric(label="SV điểm thấp nhất", value=f"{sv_min['Họ và tên']} ({sv_min['Tong_ket']})")
+        st.metric(label="👥 Số sinh viên đạt (>=5.0)", value=so_luong_dat)
+    with col3:
+        st.metric(label="🏆 Điểm cao nhất", value=f"{sv_max['Tong_ket']}", delta=sv_max['Họ và tên'])
+    with col4:
+        st.metric(label="⚠️ Điểm thấp nhất", value=f"{sv_min['Tong_ket']}", delta=sv_min['Họ và tên'], delta_color="inverse")
 
 elif menu == "2. Cơ Sở Dữ Liệu & Bộ Lọc Nâng Cao":
-    st.title("QUẢN LÝ ĐIỂM SINH VIÊN - CƠ SỞ DỮ LIỆU")
-    st.subheader("📁 Bảng điểm chi tiết của 10 sinh viên")
+    st.title("📁 Cơ Sở Dữ Liệu & Bộ Lọc Nâng Cao")
+    st.markdown("Bảng dữ liệu chi tiết toàn bộ học phần của 10 sinh viên.")
+    st.markdown("---")
     st.dataframe(df, use_container_width=True)
 
 elif menu == "3. Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân":
-    st.title("QUẢN LÝ ĐIỂM SINH VIÊN - TRA CỨU")
-    st.subheader("🔍 Tra cứu thông tin chi tiết từng sinh viên")
+    st.title("🔍 Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân")
+    st.markdown("Truy xuất nhanh thông tin chi tiết và xếp loại của từng sinh viên.")
+    st.markdown("---")
     
-    selected_student = st.selectbox("Chọn tên sinh viên:", df['Họ và tên'])
+    selected_student = st.selectbox("🎯 Chọn tên sinh viên cần tra cứu:", df['Họ và tên'])
     student_info = df[df['Họ và tên'] == selected_student].iloc[0]
     
-    st.write(f"**Họ và tên:** {student_info['Họ và tên']}")
-    st.write(f"- Điểm chuyên cần: {student_info['Chuyên cần']}")
-    st.write(f"- Điểm giữa kỳ: {student_info['Giữa kỳ']}")
-    st.write(f"- Điểm cuối kỳ: {student_info['Cuối kỳ']}")
-    st.write(f"- **Điểm tổng kết:** {student_info['Tong_ket']}")
-    st.write(f"- **Xếp loại:** {student_info['Xep_loai']}")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.info(f"**Họ và tên:** {student_info['Họ và tên']}")
+        st.write(f"- 📝 Điểm Chuyên cần: **{student_info['Chuyên cần']}**")
+        st.write(f"- 📖 Điểm Giữa kỳ: **{student_info['Giữa kỳ']}**")
+        st.write(f"- 📚 Điểm Cuối kỳ: **{student_info['Cuối kỳ']}**")
+    with c2:
+        st.success(f"- 📊 **Điểm tổng kết:** {student_info['Tong_ket']}")
+        st.warning(f"- 🎓 **Xếp loại học lực:** {student_info['Xep_loai']}")
 
 elif menu == "4. Biểu Đồ Phân Phối Đa Chiều":
-    st.title("QUẢN LÝ ĐIỂM SINH VIÊN - TRỰC QUAN HÓA")
-    st.subheader("📈 Biểu đồ điểm tổng kết của lớp")
+    st.title("📈 Biểu Đồ Phân Phối Đa Chiều")
+    st.markdown("Trực quan hóa trực quan bảng điểm tổng kết của toàn bộ sinh viên.")
+    st.markdown("---")
     
-    fig, ax = plt.subplots(figsize=(10, 4))
-    ax.bar(df['Họ và tên'], df['Tong_ket'], color='skyblue', edgecolor='black')
-    ax.set_ylabel('Điểm tổng kết')
+    fig, ax = plt.subplots(figsize=(10, 4.5))
+    bars = ax.bar(df['Họ và tên'], df['Tong_ket'], color='#3b82f6', edgecolor='#1e3a8a', linewidth=1.2, width=0.6)
+    ax.set_ylabel('Điểm Tổng Kết', fontsize=11, fontweight='bold')
+    ax.set_xlabel('Họ và Tên Sinh Viên', fontsize=11, fontweight='bold')
     ax.set_ylim(0, 10)
-    for i, v in enumerate(df['Tong_ket']):
-        ax.text(i, v + 0.1, str(v), ha='center', fontsize=9, fontweight='bold')
+    ax.grid(axis='y', linestyle='--', alpha=0.5)
     
+    for bar in bars:
+        height = bar.get_height()
+        ax.annotate(f'{height}',
+                    xy=(bar.get_x() + bar.get_width() / 2, height),
+                    xytext=(0, 4),  
+                    textcoords="offset points",
+                    ha='center', va='bottom', fontsize=10, fontweight='bold')
+
     st.pyplot(fig)
 
-# Chân trang (Footer hiển thị tên và MSSV)
+# Chân trang (Footer)
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: gray; font-size: 13px;'>Họ và tên: Phan Khải Trí | MSSV: 066208002686 | Lớp: 12B6</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #6b7280; font-size: 13px;'>Họ và tên: Phan Khải Trí | MSSV: 066208002686</p>", unsafe_allow_html=True)
