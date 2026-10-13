@@ -10,13 +10,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS tùy chỉnh để giao diện sắc nét và ấn tượng hơn
+# CSS tùy chỉnh màu sắc và phong cách nổi bật, sinh động
 st.markdown("""
     <style>
-        .main { background-color: #f8f9fa; }
-        .sidebar .sidebar-content { background-color: #1e1e2f; color: white; }
-        h1, h2, h3 { color: #1f2937; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .stMetric { background-color: #ffffff; padding: 15px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .main { background-color: #f0f4f8; }
+        h1 { color: #0f172a; font-family: 'Segoe UI', sans-serif; }
+        .stMetric { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); padding: 15px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-left: 5px solid #3b82f6; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -29,6 +28,10 @@ data = {
 }
 
 df = pd.DataFrame(data)
+
+# Chuyển cột STT hiển thị từ 1 đến 10 thay vì 0 đến 9
+df.index = range(1, len(df) + 1)
+df.index.name = 'STT'
 
 # Tính điểm tổng kết
 df['Tong_ket'] = (0.2 * df['Chuyên cần'] + 0.3 * df['Giữa kỳ'] + 0.5 * df['Cuối kỳ']).round(2)
@@ -46,7 +49,7 @@ def xep_loai(diem):
 
 df['Xep_loai'] = df['Tong_ket'].apply(xep_loai)
 
-# --- THANH MENU BÊN TRÁI (SIDEBAR PHONG CÁCH EXECUTIVE) ---
+# --- THANH MENU BÊN TRÁI (SIDEBAR) ---
 st.sidebar.title("🏢 EXECUTIVE PORTAL")
 st.sidebar.markdown("---")
 st.sidebar.markdown("**Sinh viên:** Phan Khải Trí")
@@ -67,11 +70,11 @@ menu = st.sidebar.radio(
 st.sidebar.markdown("---")
 st.sidebar.success("🟢 Trạng thái hệ thống: Hoạt động ổn định")
 
-# --- NỘI DUNG HIỂN THỊ THEO MODULE ---
+# --- NỘI DUNG HIỂN THỊ TỪNG TRANG VỚI MÀU SẮC RIÊNG BIỆT, BẮT MẮT ---
 
 if menu == "1. Tổng Quan Điều Hành (Executive Overview)":
-    st.title("⚡ Tổng Quan Điều Hành (Executive Overview)")
-    st.markdown("Hệ thống quản lý và thống kê dữ liệu học tập thông minh.")
+    st.markdown("<h1 style='color: #1e3a8a;'>⚡ Tổng Quan Điều Hành (Executive Overview)</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #475569; font-size: 16px;'>Bảng tổng hợp các chỉ số và dữ liệu thống kê chung của lớp học.</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     dtb_lop = df['Tong_ket'].mean()
@@ -90,14 +93,14 @@ if menu == "1. Tổng Quan Điều Hành (Executive Overview)":
         st.metric(label="⚠️ Điểm thấp nhất", value=f"{sv_min['Tong_ket']}", delta=sv_min['Họ và tên'], delta_color="inverse")
 
 elif menu == "2. Cơ Sở Dữ Liệu & Bộ Lọc Nâng Cao":
-    st.title("📁 Cơ Sở Dữ Liệu & Bộ Lọc Nâng Cao")
-    st.markdown("Bảng dữ liệu chi tiết toàn bộ học phần của 10 sinh viên.")
+    st.markdown("<h1 style='color: #047857;'>📁 Cơ Sở Dữ Liệu & Bộ Lọc Nâng Cao</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #047857; font-size: 16px;'>Danh sách chi tiết bảng điểm toàn bộ 10 sinh viên với thứ tự STT chuẩn từ 1 đến 10.</p>", unsafe_allow_html=True)
     st.markdown("---")
     st.dataframe(df, use_container_width=True)
 
 elif menu == "3. Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân":
-    st.title("🔍 Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân")
-    st.markdown("Truy xuất nhanh thông tin chi tiết và xếp loại của từng sinh viên.")
+    st.markdown("<h1 style='color: #b45309;'>🔍 Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #78350f; font-size: 16px;'>Hệ thống tra cứu thông tin chi tiết, điểm thành phần và xếp loại học lực cá nhân.</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     selected_student = st.selectbox("🎯 Chọn tên sinh viên cần tra cứu:", df['Họ và tên'])
@@ -114,14 +117,14 @@ elif menu == "3. Tra Cứu Hồ Sơ & Đánh Giá Cá Nhân":
         st.warning(f"- 🎓 **Xếp loại học lực:** {student_info['Xep_loai']}")
 
 elif menu == "4. Biểu Đồ Phân Phối Đa Chiều":
-    st.title("📈 Biểu Đồ Phân Phối Đa Chiều")
-    st.markdown("Trực quan hóa trực quan bảng điểm tổng kết của toàn bộ sinh viên.")
+    st.markdown("<h1 style='color: #7c3aed;'>📈 Biểu Đồ Phân Phối Đa Chiều</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #5b21b6; font-size: 16px;'>Trực quan hóa biểu đồ cột điểm tổng kết của toàn bộ sinh viên.</p>", unsafe_allow_html=True)
     st.markdown("---")
     
     fig, ax = plt.subplots(figsize=(10, 4.5))
-    bars = ax.bar(df['Họ và tên'], df['Tong_ket'], color='#3b82f6', edgecolor='#1e3a8a', linewidth=1.2, width=0.6)
-    ax.set_ylabel('Điểm Tổng Kết', fontsize=11, fontweight='bold')
-    ax.set_xlabel('Họ và Tên Sinh Viên', fontsize=11, fontweight='bold')
+    bars = ax.bar(df['Họ và tên'], df['Tong_ket'], color='#8b5cf6', edgecolor='#4c1d95', linewidth=1.2, width=0.6)
+    ax.set_ylabel('Điểm Tổng Kết', fontsize=11, fontweight='bold', color='#4c1d95')
+    ax.set_xlabel('Họ và Tên Sinh Viên', fontsize=11, fontweight='bold', color='#4c1d95')
     ax.set_ylim(0, 10)
     ax.grid(axis='y', linestyle='--', alpha=0.5)
     
@@ -131,7 +134,7 @@ elif menu == "4. Biểu Đồ Phân Phối Đa Chiều":
                     xy=(bar.get_x() + bar.get_width() / 2, height),
                     xytext=(0, 4),  
                     textcoords="offset points",
-                    ha='center', va='bottom', fontsize=10, fontweight='bold')
+                    ha='center', va='bottom', fontsize=10, fontweight='bold', color='#4c1d95')
 
     st.pyplot(fig)
 
